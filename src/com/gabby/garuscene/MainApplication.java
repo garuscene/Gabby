@@ -53,13 +53,13 @@ public class MainApplication {
 
         input.requestFocus();
 
-        addConsole("Welcome to Gabby!");
-        addConsole("Enter a word to translate to Filipino!");
+        addConsole("Maligayang Pagdating sa Gabby!");
+        addConsole("Maglagay ng salita upang isalin sa Filipino!");
     }
 
     private static void searchDictinonary(String word) {
         addConsole("...");
-        addConsole("Searching results for " + word);
+        addConsole("Naghahanap ng mga kahulugan para sa \"" + word + "\"");
         //https://stackoverflow.com/questions/11497424/passing-data-to-an-html-post-form-using-java
         try {
             URL url = new URL("http://gabbydictionary.com/");
@@ -80,13 +80,12 @@ public class MainApplication {
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line;
             while((line = br.readLine()) != null) {
-                System.out.println(line);
                 if (line.contains("Results:<br>")) {
                     formatResults(line);
                     break;
                 }
                 if (line.contains("Search returned zero results..")) {
-                    addConsole("No results found.");
+                    addConsole("Walang nahanap.");
                     break;
                 }
             }
@@ -112,5 +111,28 @@ public class MainApplication {
         System.out.println(result);
 
         //DO REGEX
+
+        //https://stackoverflow.com/questions/5034442/indexes-of-all-occurrences-of-character-in-a-string
+        //Get all instances of n. --
+        int[] definitions = new int[16];
+        int listIndex = 0;
+
+        String noun = "n.  --";
+        String verb = "v.  --";
+
+        for (int i = result.indexOf(noun); i >= 0; i = result.indexOf(noun, i + noun.length())) {
+            definitions[listIndex] = i;
+            listIndex++;
+        }
+
+        //Get all instances of v. --
+        for (int i = result.indexOf(verb); i >= 0; i = result.indexOf(verb, i + verb.length())) {
+            definitions[listIndex] = i;
+            listIndex++;
+        }
+
+        for (int i = 0; i < definitions.length && definitions[i] != 0; i++) {
+            System.out.println(definitions[i]);
+        }
     }
 }
