@@ -80,8 +80,13 @@ public class MainApplication {
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line;
             while((line = br.readLine()) != null) {
+                System.out.println(line);
                 if (line.contains("Results:<br>")) {
                     formatResults(line);
+                    break;
+                }
+                if (line.contains("Search returned zero results..")) {
+                    addConsole("No results found.");
                     break;
                 }
             }
