@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 public class MainApplication {
     private static JTextPane console;
     private static JTextField input;
+    private static JScrollPane scrollPane;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Gabby");
@@ -40,7 +41,8 @@ public class MainApplication {
         StyleConstants.setFontFamily(set, "Consolas");
         console.setParagraphAttributes(set, true);
 
-        frame.add(console);
+        scrollPane = new JScrollPane(console);
+        frame.add(scrollPane);
 
         //Input========================
         input = new JTextField();
