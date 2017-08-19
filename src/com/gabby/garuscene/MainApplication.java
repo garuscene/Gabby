@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
+import java.util.ArrayList;
 
 public class MainApplication {
     public static JTextPane console;
@@ -113,26 +114,21 @@ public class MainApplication {
         //DO REGEX
 
         //https://stackoverflow.com/questions/5034442/indexes-of-all-occurrences-of-character-in-a-string
-        //Get all instances of n. --
-        int[] definitions = new int[16];
-        int listIndex = 0;
+        ArrayList<Integer> markers = new ArrayList<>();
 
         String noun = "n.  --";
         String verb = "v.  --";
 
+        //Get all instances of n. --
         for (int i = result.indexOf(noun); i >= 0; i = result.indexOf(noun, i + noun.length())) {
-            definitions[listIndex] = i;
-            listIndex++;
+            markers.add(i);
         }
 
         //Get all instances of v. --
         for (int i = result.indexOf(verb); i >= 0; i = result.indexOf(verb, i + verb.length())) {
-            definitions[listIndex] = i;
-            listIndex++;
+            markers.add(i);
         }
 
-        for (int i = 0; i < definitions.length && definitions[i] != 0; i++) {
-            System.out.println(definitions[i]);
-        }
+        markers.stream().forEach(System.out::println);
     }
 }
