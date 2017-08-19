@@ -161,7 +161,6 @@ public class MainApplication {
 
         //Sort in ascending order
         lineMarkers.sort(Comparator.comparing(Integer::valueOf));
-        lineMarkers.forEach(System.out::println);
 
         //Get all the strings into parts
         ArrayList<String> lines = new ArrayList<>();
