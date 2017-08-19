@@ -127,7 +127,9 @@ public class MainApplication {
         final String NOUN = "n.  --";
         final String NOUN2 = "n. --";
         final String VERB = "v.  --";
+        final String VERB2 = "v. --";
         final String ADJECTIVE = "adj.  --";
+        final String ADJECTIVE2 = "adj. --";
         final String OTHER_WORDS = "/";
 
         //Mark all nouns
@@ -173,7 +175,7 @@ public class MainApplication {
 
             //Matches if the line should be indented
             String currentLine = result.substring(lineMarkers.get(i), upBound);
-            if (Stream.of(NOUN, NOUN2, VERB, ADJECTIVE).anyMatch(currentLine::startsWith)) {
+            if (Stream.of(NOUN, NOUN2, VERB, VERB2, ADJECTIVE, ADJECTIVE2).anyMatch(currentLine::startsWith)) {
                 currentLine = "    " + currentLine.trim();
             }
             //No indention
@@ -200,5 +202,12 @@ public class MainApplication {
     private static void printOutResults(ArrayList<String> lines) {
         lines.forEach(MainApplication::addConsole);
         input.setText("");
+        scrollDown();
+    }
+
+    private static void scrollDown() {
+        JScrollBar bar = scrollPane.getVerticalScrollBar();
+        bar.setValue(bar.getMaximum());
+        scrollPane.updateUI();
     }
 }
