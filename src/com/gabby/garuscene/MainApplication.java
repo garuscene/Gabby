@@ -68,8 +68,9 @@ public class MainApplication {
     }
 
     private static void searchDictinonary(String word) {
-        addConsole("...");
+        addConsole("***********************************************************");
         addConsole("Naghahanap ng mga kahulugan para sa \"" + word + "\"");
+        addConsole("***********************************************************");
         //https://stackoverflow.com/questions/11497424/passing-data-to-an-html-post-form-using-java
         try {
             URL url = new URL("http://gabbydictionary.com/");
@@ -138,9 +139,11 @@ public class MainApplication {
 
         //Mark all verbs
         markThese(result, lineMarkers, VERB);
+        markThese(result, lineMarkers, VERB2);
 
         //Mark all adj
         markThese(result, lineMarkers, ADJECTIVE);
+        markThese(result, lineMarkers, ADJECTIVE2);
 
         //Mark all other words
         markThese(result, lineMarkers, OTHER_WORDS);
@@ -206,8 +209,6 @@ public class MainApplication {
     }
 
     private static void scrollDown() {
-        JScrollBar bar = scrollPane.getVerticalScrollBar();
-        bar.setValue(bar.getMaximum());
-        scrollPane.updateUI();
+        console.setCaretPosition(console.getDocument().getLength());
     }
 }
