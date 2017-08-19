@@ -122,6 +122,7 @@ public class MainApplication {
 
         //Split lines of nouns, verbs, adjectives
         final String NOUN = "n.  --";
+        final String NOUN2 = "n. --";
         final String VERB = "v.  --";
         final String ADJECTIVE = "adj.  --";
         final String OTHER_WORDS = "/";
@@ -187,6 +188,12 @@ public class MainApplication {
         }
 
         printOutResults(lines);
+    }
+
+    private static void markThese(String base, ArrayList<Integer> list, String comparator) {
+        for (int i = base.indexOf(comparator); i >= 0; i = base.indexOf(comparator, i + comparator.length())) {
+            list.add(i);
+        }
     }
 
     private static void printOutResults(ArrayList<String> lines) {
