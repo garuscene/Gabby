@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainApplication {
     private static JTextPane console;
+    private static JTextField input;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Gabby");
@@ -39,7 +42,7 @@ public class MainApplication {
         frame.add(console);
 
         //Input========================
-        JTextField input = new JTextField();
+        input = new JTextField();
         input.setMargin(new Insets(5, 5, 5, 5));
         input.setFont(new Font("Consolas", Font.PLAIN, 12));
         input.addActionListener(new AbstractAction() {
@@ -91,6 +94,7 @@ public class MainApplication {
                 }
                 if (line.contains("Search returned zero results..")) {
                     addConsole("Walang nahanap.");
+                    input.setText("");
                     break;
                 }
             }
@@ -122,24 +126,66 @@ public class MainApplication {
         final String ADJECTIVE = "adj.  --";
         final String OTHER_WORDS = "/";
 
-        //Mark all nouns, put them in first indention
+        //Mark all nouns
         for (int i = result.indexOf(NOUN); i >= 0; i = result.indexOf(NOUN, i + NOUN.length())) {
             lineMarkers.add(i);
         }
 
-        //Mark all verbs, put them in first indention
+        //Mark all verbs
         for (int i = result.indexOf(VERB); i >= 0; i = result.indexOf(VERB, i + VERB.length())) {
             lineMarkers.add(i);
         }
 
-        //Mark all adj, put them in first indention
+        //Mark all adj
         for (int i = result.indexOf(ADJECTIVE); i >= 0; i = result.indexOf(ADJECTIVE, i + ADJECTIVE.length())) {
             lineMarkers.add(i);
         }
 
-        //Mark all other words, put them in first indention
+        //Mark all other words
         for (int i = result.indexOf(OTHER_WORDS); i >= 0; i = result.indexOf(OTHER_WORDS, i + OTHER_WORDS.length())) {
             lineMarkers.add(i);
         }
+
+        //Mark related words
+        Pattern p = Pattern.compile("\\b[A-Z]{4,}\\b");
+        Matcher m = p.matcher(result);
+        while (m.find()) {
+            String word = m.group();
+
+            int index = result.indexOf(word);
+            while (lineMarkers.contains(index)) {
+                index = result.indexOf(word, index + 1);
+            }
+
+            lineMarkers.add(index);
+        }
+
+        //Sort in ascending order
+        lineMarkers.sort(Comparator.comparing(Integer::valueOf));
+
+        //Get all the strings into parts
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add(result.substring(0, lineMarkers.get(0) - 1));
+        for (int i = 0; i < lineMarkers.size() - 1; i++) {
+            String currentLine = result.substring(lineMarkers.get(i), lineMarkers.get(i + 1) - 1);
+            if (currentLine.startsWith(NOUN) || currentLine.startsWith(VERB) || currentLine.startsWith(ADJECTIVE)) {
+                currentLine = "    " + currentLine.trim();
+            }
+            else if (currentLine.startsWith(OTHER_WORDS)) {
+                currentLine = currentLine.substring(1, currentLine.length()).trim();
+            }
+            else {
+                currentLine = currentLine.trim();
+            }
+
+            lines.add(currentLine);
+        }
+
+        printOutResults(lines);
+    }
+
+    private static void printOutResults(ArrayList<String> lines) {
+        lines.forEach(MainApplication::addConsole);
+        input.setText("");
     }
 }
