@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class MainApplication {
-    public static JTextPane console;
+    private static JTextPane console;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Gabby");
@@ -73,11 +73,12 @@ public class MainApplication {
             PrintWriter wr = new PrintWriter(con.getOutputStream(), true);
 
             StringBuilder parameters = new StringBuilder();
-            parameters.append("q=" + URLEncoder.encode(word, "UTF-8"));
-            parameters.append("&");
-            parameters.append("x=" + URLEncoder.encode("0", "UTF-8"));
-            parameters.append("&");
-            parameters.append("y=" + URLEncoder.encode("0", "UTF-8"));
+            parameters.append("q=");
+            parameters.append(URLEncoder.encode(word, "UTF-8"));
+            parameters.append("&x=");
+            parameters.append(URLEncoder.encode("0", "UTF-8"));
+            parameters.append("&y=");
+            parameters.append(URLEncoder.encode("0", "UTF-8"));
             wr.println(parameters);
             wr.close();
 
@@ -113,7 +114,7 @@ public class MainApplication {
         result = result.trim();
         result = result.substring(12, result.length() - 12);
 
-        HashMap<Integer, Integer> lineMarkers = new HashMap<>();
+        ArrayList<Integer> lineMarkers = new ArrayList<>();
 
         //Split lines of nouns, verbs, adjectives
         final String NOUN = "n.  --";
@@ -123,22 +124,22 @@ public class MainApplication {
 
         //Mark all nouns, put them in first indention
         for (int i = result.indexOf(NOUN); i >= 0; i = result.indexOf(NOUN, i + NOUN.length())) {
-            lineMarkers.put(i, 1);
+            lineMarkers.add(i);
         }
 
         //Mark all verbs, put them in first indention
         for (int i = result.indexOf(VERB); i >= 0; i = result.indexOf(VERB, i + VERB.length())) {
-            lineMarkers.put(i, 1);
+            lineMarkers.add(i);
         }
 
         //Mark all adj, put them in first indention
         for (int i = result.indexOf(ADJECTIVE); i >= 0; i = result.indexOf(ADJECTIVE, i + ADJECTIVE.length())) {
-            lineMarkers.put(i, 1);
+            lineMarkers.add(i);
         }
 
         //Mark all other words, put them in first indention
         for (int i = result.indexOf(OTHER_WORDS); i >= 0; i = result.indexOf(OTHER_WORDS, i + OTHER_WORDS.length())) {
-            lineMarkers.put(i, 0);
+            lineMarkers.add(i);
         }
     }
 }
