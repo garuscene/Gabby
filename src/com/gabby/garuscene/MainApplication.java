@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class MainApplication {
     private static JTextPane console;
@@ -128,24 +129,17 @@ public class MainApplication {
         final String OTHER_WORDS = "/";
 
         //Mark all nouns
-        for (int i = result.indexOf(NOUN); i >= 0; i = result.indexOf(NOUN, i + NOUN.length())) {
-            lineMarkers.add(i);
-        }
+        markThese(result, lineMarkers, NOUN);
+        markThese(result, lineMarkers, NOUN2);
 
         //Mark all verbs
-        for (int i = result.indexOf(VERB); i >= 0; i = result.indexOf(VERB, i + VERB.length())) {
-            lineMarkers.add(i);
-        }
+        markThese(result, lineMarkers, VERB);
 
         //Mark all adj
-        for (int i = result.indexOf(ADJECTIVE); i >= 0; i = result.indexOf(ADJECTIVE, i + ADJECTIVE.length())) {
-            lineMarkers.add(i);
-        }
+        markThese(result, lineMarkers, ADJECTIVE);
 
         //Mark all other words
-        for (int i = result.indexOf(OTHER_WORDS); i >= 0; i = result.indexOf(OTHER_WORDS, i + OTHER_WORDS.length())) {
-            lineMarkers.add(i);
-        }
+        markThese(result, lineMarkers, OTHER_WORDS);
 
         //Mark related words
         Pattern p = Pattern.compile("\\b[A-Z]{4,}\\b");
@@ -161,25 +155,31 @@ public class MainApplication {
             lineMarkers.add(index);
         }
 
+        if (!lineMarkers.contains(0)) {
+            lineMarkers.add(0);
+        }
+
         //Sort in ascending order
         lineMarkers.sort(Comparator.comparing(Integer::valueOf));
+        lineMarkers.forEach(System.out::println);
 
         //Get all the strings into parts
         ArrayList<String> lines = new ArrayList<>();
+        for (int i = 0; i < lineMarkers.size(); i++) {
 
-        //Adds the first line, if not already
-        if (lineMarkers.get(0) > 0) {
-            lines.add(result.substring(0, lineMarkers.get(0) - 1));
-        }
+            //If it's the last marker, the upper bound should be the end of the string.
+            int upBound = i + 1 > lineMarkers.size() - 1 ? result.length() : lineMarkers.get(i + 1) - 1;
 
-        for (int i = 0; i < lineMarkers.size() - 1; i++) {
-            String currentLine = result.substring(lineMarkers.get(i), lineMarkers.get(i + 1) - 1);
-            if (currentLine.startsWith(NOUN) || currentLine.startsWith(VERB) || currentLine.startsWith(ADJECTIVE)) {
+            //Matches if the line should be indented
+            String currentLine = result.substring(lineMarkers.get(i), upBound);
+            if (Stream.of(NOUN, NOUN2, VERB, ADJECTIVE).anyMatch(currentLine::startsWith)) {
                 currentLine = "    " + currentLine.trim();
             }
+            //No indention
             else if (currentLine.startsWith(OTHER_WORDS)) {
                 currentLine = currentLine.substring(1, currentLine.length()).trim();
             }
+            //Same.
             else {
                 currentLine = currentLine.trim();
             }
