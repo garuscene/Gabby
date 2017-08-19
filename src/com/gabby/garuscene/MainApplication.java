@@ -165,7 +165,12 @@ public class MainApplication {
 
         //Get all the strings into parts
         ArrayList<String> lines = new ArrayList<>();
-        lines.add(result.substring(0, lineMarkers.get(0) - 1));
+
+        //Adds the first line, if not already
+        if (lineMarkers.get(0) > 0) {
+            lines.add(result.substring(0, lineMarkers.get(0) - 1));
+        }
+
         for (int i = 0; i < lineMarkers.size() - 1; i++) {
             String currentLine = result.substring(lineMarkers.get(i), lineMarkers.get(i + 1) - 1);
             if (currentLine.startsWith(NOUN) || currentLine.startsWith(VERB) || currentLine.startsWith(ADJECTIVE)) {
