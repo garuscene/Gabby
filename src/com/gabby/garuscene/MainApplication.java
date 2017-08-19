@@ -12,6 +12,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class MainApplication {
     public static JTextPane console;
@@ -112,17 +113,32 @@ public class MainApplication {
         result = result.trim();
         result = result.substring(12, result.length() - 12);
 
-        ArrayList<Integer> lineMarkers = new ArrayList<>();
-        ArrayList<Integer> indention = new ArrayList<>();
+        HashMap<Integer, Integer> lineMarkers = new HashMap<>();
 
         //Split lines of nouns, verbs, adjectives
         final String NOUN = "n.  --";
         final String VERB = "v.  --";
         final String ADJECTIVE = "adj.  --";
+        final String OTHER_WORDS = "/";
 
         //Mark all nouns, put them in first indention
         for (int i = result.indexOf(NOUN); i >= 0; i = result.indexOf(NOUN, i + NOUN.length())) {
-            lineMarkers.add(i);
+            lineMarkers.put(i, 1);
+        }
+
+        //Mark all verbs, put them in first indention
+        for (int i = result.indexOf(VERB); i >= 0; i = result.indexOf(VERB, i + VERB.length())) {
+            lineMarkers.put(i, 1);
+        }
+
+        //Mark all adj, put them in first indention
+        for (int i = result.indexOf(ADJECTIVE); i >= 0; i = result.indexOf(ADJECTIVE, i + ADJECTIVE.length())) {
+            lineMarkers.put(i, 1);
+        }
+
+        //Mark all other words, put them in first indention
+        for (int i = result.indexOf(OTHER_WORDS); i >= 0; i = result.indexOf(OTHER_WORDS, i + OTHER_WORDS.length())) {
+            lineMarkers.put(i, 0);
         }
     }
 }
