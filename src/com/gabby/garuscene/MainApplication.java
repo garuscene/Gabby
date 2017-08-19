@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainApplication {
     public static JTextPane console;
@@ -109,26 +111,61 @@ public class MainApplication {
     private static void formatResults(String result) {
         result = result.trim();
         result = result.substring(12, result.length() - 12);
-        System.out.println(result);
-
-        //DO REGEX
 
         //https://stackoverflow.com/questions/5034442/indexes-of-all-occurrences-of-character-in-a-string
-        ArrayList<Integer> markers = new ArrayList<>();
+        ArrayList<Integer> i1Markers = new ArrayList<>(); //First indents
+        ArrayList<Integer> i0Markers = new ArrayList<>();
 
         String noun = "n.  --";
         String verb = "v.  --";
+        String adjective = "adj.  --";
+        String otherWords = "/";
 
         //Get all instances of n. --
         for (int i = result.indexOf(noun); i >= 0; i = result.indexOf(noun, i + noun.length())) {
-            markers.add(i);
+            i1Markers.add(i);
         }
 
         //Get all instances of v. --
         for (int i = result.indexOf(verb); i >= 0; i = result.indexOf(verb, i + verb.length())) {
-            markers.add(i);
+            i1Markers.add(i);
         }
 
-        markers.stream().forEach(System.out::println);
+        //Get all instances of adj. --
+        for (int i = result.indexOf(adjective); i >= 0; i = result.indexOf(adjective, i + adjective.length())) {
+            i1Markers.add(i);
+        }
+
+        //Get all instances of /
+        for (int i = result.indexOf(otherWords); i >= 0; i = result.indexOf(otherWords, i + otherWords.length())) {
+            i0Markers.add(i);
+        }
+
+        //Prepare the results:
+        ArrayList<String> lines = new ArrayList<>();
+
+        Collections.sort(i1Markers, Comparator.comparing(Integer::valueOf));
+        //Add all n's, v's, adj's
+        for (int i = 0; i < i1Markers.size() - 1; i++) {
+            lines.add("    " + result.substring(i1Markers.get(i), i1Markers.get(i + 1) - 1));
+        }
+
+        Collections.sort(i0Markers, Comparator.comparing(Integer::valueOf));
+
+        //Others words
+        for (int i = 0; i < i0Markers.size() - 1; i++) {
+            lines.add(result.substring(i0Markers.get(i), i0Markers.get(i + 1) - 1));
+        }
+
+        //Add the first word:
+        lines.add(0, result.substring(0, i1Markers.get(0)));
+
+        printResults(lines);
+    }
+
+    private static void printResults(ArrayList<String> lines) {
+        for (String s : lines) {
+            addConsole(s);
+        }
     }
 }
